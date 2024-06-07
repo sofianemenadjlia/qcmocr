@@ -1,0 +1,4 @@
+google-cloud-vision
+pillow
+python-Levenshtein
+matplotlib

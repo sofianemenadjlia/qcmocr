@@ -1,0 +1,123 @@
+%%
+%% Examen de PdP
+%%
+%% Copyright (C) 2014-2024, LaBRI, Université de Bordeaux.
+%%
+%% History:
+%% - 26 février 2014: Début du template.
+%% - 16 mars    2015: Version 2015
+%% - 4 janvier  2024: Template générique pour les Quiz de PdP
+
+\documentclass[a4paper]{article}
+
+%% Font packages
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+%% Localization
+\usepackage[french]{babel}
+
+%% Other packages
+\usepackage{multicol}
+
+%% AMC package for multiple-choice questions
+\usepackage[francais,bloc,completemulti]{automultiplechoice}
+
+%% The same but with the answers
+%\usepackage[francais,bloc,completemulti,answers]{automultiplechoice}
+
+%% Page layout
+\addtolength{\textheight}{2em}
+\addtolength{\textwidth}{2cm}
+\addtolength{\hoffset}{-1cm}
+
+%% Document
+\begin{document}
+
+%% Scoring strategies
+%% Parameters (this idiot chose french names for the parameters...):
+%%   * e (erreur) : réponse incohérente (plusieurs cases cochées pour une
+%%       question à choix unique ou pour, une question à choix multiple, la
+%%       réponse 'aucune réponse' cochée avec une autre réponse)
+%%   * v (vide) : aucune case cochée
+%%   * b (bonne) : bonne réponse
+%%   * m (mauvaise) : mauvaise réponse
+%%   * p (plancher) : nombre de points minimum pour la question
+%%   * mz (maximum ou zéro) : toutes les réponses correctes ou zéro point
+
+% Single choice question
+\scoringDefaultS{e=-1,v=0,b=1,m=-1}
+
+% Multiple choices questions
+\scoringDefaultM{e=-1,v=0,b=1,m=-1,p=-1,formula=((NBC-NMC>2)?2:(NBC-NMC))}
+%\scoringDefaultM{e=-1,v=0,b=1,m=-1,p=-1,formula=((NBC-NMC>2)?2:(NBC-NMC))}
+
+%% Questions
+\input{questions.tex}
+
+%% Exam copy (with the number of copies)
+\begin{examcopy}[125]
+
+  %% Header for the exam
+  \begin{minipage}{.4\linewidth}
+    \centering\large\bf Projets de Progammation\\ Quiz (\examtopic)
+  \end{minipage}
+\noindent\fbox{%
+\namefield{\begin{minipage}{.55\linewidth}
+    \begin{minipage}[t]{.55\linewidth} % Adjust the width as needed
+        Nom, Prénom:
+        
+        \vspace*{.5cm}\dotfill
+        \vspace*{1mm}
+    \end{minipage}%
+    \vrule % Vertical line
+    \begin{minipage}[t]{.35\linewidth} % Adjust the width as needed
+          Num étudiant:
+        
+        \vspace*{.5cm}\dotfill
+        \vspace*{1mm}
+    \end{minipage}
+\end{minipage}}%
+}
+
+  %% End of the header
+
+  %% Rules and warnings for the exam
+  \medskip
+  %
+  \begin{minipage}{\textwidth}
+    \textbf{Indications et règles:}
+
+    \begin{itemize}
+      \item Aucun document n'est autorisé.
+
+      \item Remplir/cocher les cases de manière nette et précise (aucune rature ou annotation supplémentaire n'est possible, car ce QCM sera corrigé par reconnaissance optique automatique).
+
+      \item Les questions simples requièrent de cocher une seule case, et valent +1 pour une bonne réponse, -1 pour une mauvaise réponse, et 0 si aucune case n'est cochée.
+
+      \item Les questions avec un '\multiSymbole{}' requièrent de cocher de une à plusieurs cases. Ces questions valent +1 par case correcte cochée, -1 par case incorrecte cochée, et 0 dans les autres cas (néanmoins, la valeur totale sera bornée inférieurement par~$-1$ et supérieurement par~$+2$).
+    \end{itemize}
+  \end{minipage}
+  %
+
+  %% Header for the question list
+  \begin{center}
+    \hrule\vspace{2mm}
+    \bf\Large Questions
+    \vspace{1mm}
+    \hrule
+    \bigskip
+  \end{center}
+
+  %% Question list
+  \shufflegroup{main}
+  %% if you want to show only 10 questions from the group (taken randomly)
+  %% \insertgroup[10]{main}
+  \insertgroup[10]{main}
+
+  \clearpage
+
+\end{examcopy}
+
+\end{document}

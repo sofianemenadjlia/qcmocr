@@ -1,0 +1,11 @@
+[>] Installed in /tmp/aMQFaEqmYb
+[t] subject and layout: USER = 11.45 s, SYSTEM = 0.23 s, REAL = 10.79 s
+[t] scoring strategy: USER = 5.18 s, SYSTEM = 0.08 s, REAL = 5.14 s
+[T] No layout defects
+[t] fake scans build: USER = 2747.22 s, SYSTEM = 12.87 s, REAL = 327.45 s
+[t] automatic data capture: USER = 218.31 s, SYSTEM = 22.96 s, REAL = 29.40 s
+[t] scoring: USER = 1.95 s, SYSTEM = 0.02 s, REAL = 2.14 s
+[T] Perfect copies test: ALL
+[i] 12 × Intel(R) Xeon(R) E-2146G CPU @ 3.50GHz
+[i] memory: 32839924 kB
+[0] Test completed succesfully

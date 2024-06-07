@@ -1,0 +1,11 @@
+[>] Installed in /data/alexis/vFVPANl9O6
+[t] subject and layout: USER = 11.53 s, SYSTEM = 0.21 s, REAL = 11.79 s
+[t] scoring strategy: USER = 5.25 s, SYSTEM = 0.08 s, REAL = 5.15 s
+[T] No layout defects
+[t] fake scans build: USER = 2741.73 s, SYSTEM = 12.54 s, REAL = 327.23 s
+[t] automatic data capture: USER = 143.92 s, SYSTEM = 17.45 s, REAL = 86.50 s
+[t] scoring: USER = 1.96 s, SYSTEM = 0.02 s, REAL = 2.14 s
+[T] Perfect copies test: ALL
+[i] 12 × Intel(R) Xeon(R) E-2146G CPU @ 3.50GHz
+[i] memory: 32839924 kB
+[0] Test completed succesfully

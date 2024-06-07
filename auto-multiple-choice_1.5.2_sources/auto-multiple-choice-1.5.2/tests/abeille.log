@@ -1,0 +1,11 @@
+[>] Installed in /tmp/dVHMNrIXAG
+[t] subject and layout: USER = 13.13 s, SYSTEM = 0.57 s, REAL = 13.29 s
+[t] scoring strategy: USER = 5.85 s, SYSTEM = 0.20 s, REAL = 5.65 s
+[T] No layout defects
+[t] fake scans build: USER = 3135.81 s, SYSTEM = 15.23 s, REAL = 502.45 s
+[t] automatic data capture: USER = 276.34 s, SYSTEM = 24.81 s, REAL = 49.54 s
+[t] scoring: USER = 2.33 s, SYSTEM = 0.04 s, REAL = 2.65 s
+[T] Perfect copies test: ALL
+[i] 8 × Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
+[i] memory: 16349748 kB
+[0] Test completed succesfully

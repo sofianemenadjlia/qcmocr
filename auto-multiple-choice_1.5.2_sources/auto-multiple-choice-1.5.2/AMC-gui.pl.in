@@ -1,0 +1,172 @@
+#! /usr/bin/perl -w
+#
+# Copyright (C) 2008-2021 Alexis Bienvenüe <paamc@passoire.fr>
+#
+# This file is part of Auto-Multiple-Choice
+#
+# Auto-Multiple-Choice is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 2 of
+# the License, or (at your option) any later version.
+#
+# Auto-Multiple-Choice is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Auto-Multiple-Choice.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+use warnings;
+use 5.012;
+
+use Getopt::Long;
+
+use Gtk3 -init;
+
+use Glib::Object::Introspection;
+use Glib qw/TRUE FALSE/;
+
+use Cwd;
+use File::Spec::Functions
+  qw/splitpath catpath splitdir/;
+use I18N::Langinfo qw(langinfo CODESET);
+
+use AMC::Basic;
+use AMC::Config;
+use AMC::Project;
+use AMC::Gui::Main;
+
+Gtk3::IconTheme::get_default->prepend_search_path( amc_specdir('icons') );
+Gtk3::Window::set_default_icon_list(
+    [
+        map {
+            Gtk3::IconTheme::get_default->load_icon( "auto-multiple-choice",
+                $_, "force-svg" )
+        } ( 8, 16, 32, 48, 64, 128 )
+    ]
+);
+
+use_gettext;
+use_amc_plugins();
+
+POSIX::setlocale( &POSIX::LC_NUMERIC, "C" );
+
+my $debug      = 0;
+my $debug_file = '';
+my $do_nothing = 0;
+my $testing    = 0;
+
+my $profile     = '';
+my $project_dir = '';
+
+GetOptions(
+    "debug!"       => \$debug,
+    "debug-file=s" => \$debug_file,
+    "profile=s"    => \$profile,
+    "p=s"          => \$project_dir,
+    "do-nothing!"  => \$do_nothing,
+    "testing!"     => \$testing,
+);
+
+if ( $debug || $debug_file ) {
+    set_debug( $debug_file || 'new' );
+    print "DEBUG ==> " . debug_file() . "\n";
+}
+
+debug_pm_version("Gtk3");
+
+my %w = ();
+
+my $home_dir         = Glib::get_home_dir();
+my $encodage_systeme = langinfo( CODESET() );
+
+my $shortcuts = AMC::Path::new( home_dir => $home_dir );
+my $config    = AMC::Config::new(
+    shortcuts => $shortcuts,
+    home_dir  => $home_dir,
+    profile   => $profile,
+    testing   => $testing,
+);
+
+# goes to a specific directory if the project directory is given as a
+# command-line option
+
+if ( -f $project_dir ) {
+    $project_dir =~ s/\/?options\.xml$//;
+}
+$project_dir =~ s/\/+$//;
+
+if ( -d $project_dir ) {
+    debug "Opening project from directory $project_dir ...";
+    $project_dir = Cwd::realpath($project_dir);
+    my ( $v, $d, $f ) = splitpath($project_dir);
+    my $r = catpath( $v, $d, '' );
+    $r =~ s/\/+$//;
+    $config->set( 'rep_projets', $r );
+    @ARGV = $f;
+}
+
+# creates projets and models directories if needed (if not present,
+# Edit/Parameters can be disrupted)
+
+for my $k (qw/projects_home rep_modeles/) {
+    my $path = $config->get_absolute($k);
+    if ( -e $path ) {
+        debug "WARNING: $path ($k) is not a directory!" if ( !-d $path );
+    } else {
+        mkdir($path);
+    }
+}
+
+$config->set_projects_home( $config->get('rep_projets') );
+
+my $project = AMC::Project->new( config => $config );
+my $main    = AMC::Gui::Main->new(
+    config     => $config,
+    project    => $project,
+    do_nothing => $do_nothing,
+    testing    => $testing,
+);
+$project->set( 'gui', $main );
+
+#######################################
+
+exit 0 if ($do_nothing);
+
+#######################################
+
+$main->projet_ouvre( $ARGV[0] );
+
+#######################################
+# For MacPorts with latexfree variant, for example
+
+if ( "@/LATEX_FREE/@" =~ /(1|true|yes)/i ) {
+    my $message = '';
+    if ( !commande_accessible("kpsewhich") ) {
+        $message = sprintf( __("I don't find the command %s."), "kpsewhich" )
+          . __("Perhaps LaTeX is not installed?");
+    } else {
+        if ( !get_sty() ) {
+
+# TRANSLATORS: Do not translate 'auto-multiple-choice latex-link', which is a command to be typed on MacOsX
+            $message = __(
+"The style file automultiplechoice.sty seems to be unreachable. Try to use command 'auto-multiple-choice latex-link' as root to fix this."
+            );
+        }
+    }
+    if ($message) {
+        my $dialog = Gtk3::MessageDialog->new( $main->get_ui('main_window'),
+            'destroy-with-parent', 'error', 'ok', $message );
+        $dialog->run;
+        $dialog->destroy;
+    }
+}
+
+Gtk3->main();
+
+1;
+
+__END__
+

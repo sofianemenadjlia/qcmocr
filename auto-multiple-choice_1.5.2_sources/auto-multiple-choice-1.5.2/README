@@ -1,0 +1,18 @@
+To install AMC from the development tree:
+
+# clone the repository on your machine
+
+git clone https://gitlab.com/jojo_boulix/auto-multiple-choice.git
+cd auto-multiple-choice
+
+# Check for dependencies (you can find them as debian packages in
+# Build-Depends from ppa/control)
+
+# build
+
+make version_files
+make
+
+# install
+
+sudo make install
